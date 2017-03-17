@@ -9,11 +9,19 @@
 
 #include"addcss.h"
 
-const char *UTF8 = "<meta charset=\"utf-8\">\n";
-const int UTF_LENGTH = 23;
-const char *STYLE_START = "<style>\n";
-const int STYLE_LENGTH = 8;
-const char *STYLE_END = "</style>\n";
+const char *kHeadHtml = "<!DOCTYPE html>\n"
+"<html>\n"
+"<head>\n"
+"<meta charset=\"utf-8\">\n"
+"<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n"
+"<style>\n";
+const int kHeadLen = 132;
+
+const char *kStartBody = "</style></head><body>\n";
+const int kBodyLen = 22;
+
+const char *kEndHtml = "</body></html>";
+const int kEndLen = 14;
 
 const char *INFO = "Useage:\n"
 "    -<source html file> -out <path> [-options]\n"
@@ -73,21 +81,19 @@ int main(int argc, char **argv) {
     }
 
     // start write thing
-    // first add a utf-8
+    // first add head word
     FILE *out_file = fopen(output_file_name, "a+");
-    fwrite(UTF8, UTF_LENGTH, sizeof(char), out_file);
-    // write <style>
-    fwrite(STYLE_START, STYLE_LENGTH, sizeof(char), out_file);
 
-    // add css file
-    Append2File(out_file, src_css, 0);
+    fwrite(end2File(out_file, src_css, 0);
 
-    // write </style>
-    fwrite(STYLE_END, STYLE_LENGTH + 1, sizeof(char), out_file);
+    // write </style><body>
+    fwrite(kStartBody, kBodyLen, sizeof(char), out_file);
 
     // add origin html code
     Append2File(out_file, old_html_file, 0);
 
+    // end
+    fwrite(kEndHtml, kEndLen, sizeof(char), out_file);
 
     // close source files
     fclose(src_css);
