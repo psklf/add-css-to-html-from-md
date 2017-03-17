@@ -1,5 +1,11 @@
+/*
+ * By psklf 2017-03-16
+ * Surprised46@163.com
+ */
+
 #include<stdio.h>
 #include<stdlib.h>
+#include<string.h>
 
 #include"addcss.h"
 
@@ -9,24 +15,49 @@ const char *STYLE_START = "<style>\n";
 const int STYLE_LENGTH = 8;
 const char *STYLE_END = "</style>\n";
 
+const char *INFO = "Useage:\n"
+"    -<source html file> -out <path> [-options]\n"
+"Options:\n"
+"    -s:Use simple css\n"
+"    -f:Use Github css\n";
+
 int main(int argc, char **argv) {
-    if (argc == 1) {
-        printf("Need file path!\n");
+    if (argc < 4) {
+        printf("%s", INFO);
         return -1;
     }
-    
-    if (argc > 3) {
+
+    if (argc > 5) {
+        printf("%s", INFO);
         return -1;
     }
 
     char *src_string = argv[1];
-    char *output_file_name;
-    if (argc == 3) {
-        output_file_name = argv[2];
-    } else {
-        output_file_name = "output.html";
+    char *output_file_name = "output.html";
+    int css_mode = 0;  /* Use simple, if 1 use Github */
+
+    int ret = strcmp(argv[2], "-out");
+    if (ret) {
+        printf("invalid option!\n");
+        return -1;
     }
 
+    output_file_name = argv[3];
+
+    if (argc == 5) {
+
+        /* set the css config */
+        if (argv[4][1] == 's') {
+            css_mode = 0;
+        } else if (argv[4][1] == 'f'){
+            css_mode = 1;
+        } else {
+            printf("Invalid option!\n");
+            return -1;
+        }
+    }
+
+    printf("path %s mode %d", output_file_name, css_mode);
     // open two files
     FILE *old_html_file;
     if ((old_html_file = fopen(src_string, "r")) == NULL) {
@@ -47,26 +78,27 @@ int main(int argc, char **argv) {
     fwrite(UTF8, UTF_LENGTH, sizeof(char), out_file);
     // write <style>
     fwrite(STYLE_START, STYLE_LENGTH, sizeof(char), out_file);
-    fclose(out_file);
 
     // add css file
-    Append2File(output_file_name, src_css, 0);
+    Append2File(out_file, src_css, 0);
 
-    out_file = fopen(output_file_name, "a+");
     // write </style>
     fwrite(STYLE_END, STYLE_LENGTH + 1, sizeof(char), out_file);
-    fclose(out_file);
 
     // add origin html code
-    Append2File(output_file_name, old_html_file, 0);
-    
+    Append2File(out_file, old_html_file, 0);
+
+
+    // close source files
     fclose(src_css);
     fclose(old_html_file);
 
+    fclose(out_file);
     return 0;
 }
 
-int Append2File(char *output_name, FILE *src, int num) {
+
+int Append2File(FILE *output_file, FILE *src, int num) {
     fseek(src, 0, SEEK_END);
     long src_size = ftell(src);
     fseek(src, 0, SEEK_SET);  //same as rewind(f);
@@ -75,14 +107,11 @@ int Append2File(char *output_name, FILE *src, int num) {
     fread(src_buffer, sizeof(char), src_size, src);
     src_buffer[src_size] = EOF;
 
-    FILE *html_out_file = fopen(output_name, "a+");
-    size_t ret = fwrite(src_buffer, sizeof(char), src_size, html_out_file);
+    size_t ret = fwrite(src_buffer, sizeof(char), src_size, output_file);
     if (ret < 1) {
         printf("Error in write!\n");
         return -1;
     }
     printf("Size of write %lu.\n", ret);
-
-    fclose(html_out_file);
     return 0;
 }

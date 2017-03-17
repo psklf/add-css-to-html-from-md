@@ -1,6 +1,10 @@
-/* psklf 
- *
+/*
+ * By psklf 2017-03-16
+ * Surprised46@163.com
  */
 
-
-int Append2File(char *output_name, FILE *src, int num);
+/*
+ * Add all content in src file to output_file
+ * @param num useless now
+ */
+int Append2File(FILE *output_file, FILE *src, int num);
