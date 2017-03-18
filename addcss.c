@@ -23,6 +23,12 @@ const int kBodyLen = 22;
 const char *kEndHtml = "</body></html>";
 const int kEndLen = 14;
 
+const char *kGithubInfo = "<article class=\"markdown-body\">\n";
+const int kGithubInfoLen = 32;
+
+const char *kArticleEnd = "</article>\n";
+const int kArticleEndLen = 11;
+
 const char *INFO = "Useage:\n"
 "    -<source html file> -out <path> [-options]\n"
 "Options:\n"
@@ -40,8 +46,10 @@ int main(int argc, char **argv) {
         return -1;
     }
 
+    // calculate the length, used by myself
+    // printf("1: %d. 2: %d.\n", CalcuLength(kGithubInfo), CalcuLength(kArticleEnd));
+
     char *src_string = argv[1];
-    char *output_file_name = "output.html";
     int css_mode = 0;  /* Use simple, if 1 use Github */
 
     int ret = strcmp(argv[2], "-out");
@@ -50,59 +58,62 @@ int main(int argc, char **argv) {
         return -1;
     }
 
+    char *output_file_name = "output.html";
     output_file_name = argv[3];
 
     if (argc == 5) {
-
         /* set the css config */
         if (argv[4][1] == 's') {
             css_mode = 0;
         } else if (argv[4][1] == 'f'){
             css_mode = 1;
         } else {
-            printf("Invalid option!\n");
+            printf("Invalid CSS option!\n");
             return -1;
         }
     }
 
     printf("path %s mode %d", output_file_name, css_mode);
-    // open two files
-    FILE *old_html_file;
-    if ((old_html_file = fopen(src_string, "r")) == NULL) {
-        printf("Error in open source html file!\n");
-        return -1;
-    }
+    return 0;
+}
 
+int AddCssFile(char *out_file_name, char * src_file_name, char *css_file_name) {
     FILE *src_css;
-    // if ((src_css = fopen("./github-markdown.css", "r")) == NULL) {
-    if ((src_css = fopen("./simple-style.css", "r")) == NULL) {
+    if ((src_css = fopen(css_file_name, "r")) == NULL) {
         printf("Error in open css file!\n");
         return -1;
     }
 
     // start write thing
-    // first add head word
-    FILE *out_file = fopen(output_file_name, "a+");
+    FILE *out_file = fopen(out_file_name, "a+");
 
-    fwrite(end2File(out_file, src_css, 0);
+    // first add head word
+    fwrite(kHeadHtml, kHeadLen, sizeof(char), out_file);
+
+    // add CSS
+    Append2File(out_file, src_css, 0);
+    fclose(src_css);
 
     // write </style><body>
     fwrite(kStartBody, kBodyLen, sizeof(char), out_file);
 
     // add origin html code
+    FILE *old_html_file;
+    if ((old_html_file = fopen(src_file_name, "r")) == NULL) {
+        printf("Error open source file!\n");
+        fclose(out_file);
+        return -1;
+    }
+
     Append2File(out_file, old_html_file, 0);
+    fclose(old_html_file);
 
     // end
     fwrite(kEndHtml, kEndLen, sizeof(char), out_file);
 
-    // close source files
-    fclose(src_css);
-    fclose(old_html_file);
-
     fclose(out_file);
     return 0;
 }
-
 
 int Append2File(FILE *output_file, FILE *src, int num) {
     fseek(src, 0, SEEK_END);
@@ -120,4 +131,12 @@ int Append2File(FILE *output_file, FILE *src, int num) {
     }
     printf("Size of write %lu.\n", ret);
     return 0;
+}
+
+int CalcuLength(char *str) {
+    int in = 0;
+    while (str[in] != '\0') {
+        ++in;
+    }
+    return in;
 }
