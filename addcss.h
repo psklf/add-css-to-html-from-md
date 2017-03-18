@@ -8,7 +8,7 @@
  * Add CSS and source HTML to the output file
  *
  */
-int AddCssFile(char *out_file_name, char * src_file_name, char *css_file_name);
+int AddCssFile(char *out_file_name, char * src_file_name, char *css_file_name, int mode);
 
 /**
  * Add all content in src file to output_file

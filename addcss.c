@@ -73,11 +73,13 @@ int main(int argc, char **argv) {
         }
     }
 
-    printf("path %s mode %d", output_file_name, css_mode);
+    printf("path %s mode %d \n", output_file_name, css_mode);
+
+    AddCssFile(output_file_name, src_string, "./simple-style.css", css_mode);
     return 0;
 }
 
-int AddCssFile(char *out_file_name, char * src_file_name, char *css_file_name) {
+int AddCssFile(char *out_file_name, char * src_file_name, char *css_file_name, int mode) {
     FILE *src_css;
     if ((src_css = fopen(css_file_name, "r")) == NULL) {
         printf("Error in open css file!\n");
@@ -97,6 +99,10 @@ int AddCssFile(char *out_file_name, char * src_file_name, char *css_file_name) {
     // write </style><body>
     fwrite(kStartBody, kBodyLen, sizeof(char), out_file);
 
+    // judge the mode if github should add some other info
+    if (mode == 1) {
+        fwrite(kGithubInfo, kGithubInfoLen, sizeof(char), out_file);
+    }
     // add origin html code
     FILE *old_html_file;
     if ((old_html_file = fopen(src_file_name, "r")) == NULL) {
@@ -109,6 +115,10 @@ int AddCssFile(char *out_file_name, char * src_file_name, char *css_file_name) {
     fclose(old_html_file);
 
     // end
+    if (mode == 1) {
+        fwrite(kArticleEnd, kArticleEndLen, sizeof(char), out_file);
+    }
+
     fwrite(kEndHtml, kEndLen, sizeof(char), out_file);
 
     fclose(out_file);
