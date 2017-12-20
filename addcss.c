@@ -9,27 +9,27 @@
 
 #include"addcss.h"
 
-const char *kHeadHtml = "<!DOCTYPE html>\n"
+static const char *kHeadHtml = "<!DOCTYPE html>\n"
 "<html>\n"
 "<head>\n"
 "<meta charset=\"utf-8\">\n"
 "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n"
 "<style>\n";
-const int kHeadLen = 132;
+static const int kHeadLen = 132;
 
-const char *kStartBody = "</style></head><body>\n";
-const int kBodyLen = 22;
+static const char *kStartBody = "</style></head><body>\n";
+static const int kBodyLen = 22;
 
-const char *kEndHtml = "</body></html>";
-const int kEndLen = 14;
+static const char *kEndHtml = "</body></html>";
+static const int kEndLen = 14;
 
-const char *kGithubInfo = "<article class=\"markdown-body\">\n";
-const int kGithubInfoLen = 32;
+static const char *kGithubInfo = "<article class=\"markdown-body\">\n";
+static const int kGithubInfoLen = 32;
 
-const char *kArticleEnd = "</article>\n";
-const int kArticleEndLen = 11;
+static const char *kArticleEnd = "</article>\n";
+static const int kArticleEndLen = 11;
 
-const char *INFO = "Useage:\n"
+static const char *INFO = "Useage:\n"
 "    -<source html file> -out <path> [-options]\n"
 "Options:\n"
 "    -s:Use simple css\n"
