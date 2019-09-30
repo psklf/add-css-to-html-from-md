@@ -9,14 +9,20 @@ I wrote this simple program to do such work: add the CSS file to the plain HTML 
     make
 
 ## Useage
-If you use [pandoc](https://github.com/jgm/pandoc)to do the convert work, you can use the convert shell script to convert file and add style.
+If you use [pandoc](https://github.com/jgm/pandoc) to do the convert work, you can use the convert shell script to convert file and add style.
 
 
 ### Use pandoc to convert markdown file then add css
+
     Usage:
-        sh convert.sh <source_md_file> <output_html_file>
+        bash convert.sh <source_md_file> <output_html_file>
+        bash convert.sh <source_md_dir>
+
+
+when provide a directory, output files to current folder.
 
 ### Only add style
+
 	Useage:
         -<source html file> -out <path> [-options]
     Options:
