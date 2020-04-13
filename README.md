@@ -8,7 +8,7 @@ I wrote this simple program to do such work: add the CSS file to the plain HTML 
     cd add-css-to-html-from-md
     make
 
-## Useage
+## Usage
 If you use [pandoc](https://github.com/jgm/pandoc) to do the convert work, you can use the convert shell script to convert file and add style.
 
 
@@ -29,5 +29,12 @@ when provide a directory, output files to current folder.
         -s:Use simple css
         -f:Use Github css
 
-## CSS source
+## Thanks
+
+### CSS source
+
 Get css from [github-markdown-css](https://github.com/sindresorhus/github-markdown-css)
+
+### Highlightjs
+
+[highlightjs](https://highlightjs.org/)
