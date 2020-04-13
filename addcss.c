@@ -9,6 +9,8 @@
 
 #include"addcss.h"
 
+// Length of chars include `\n` but not `\0`
+
 static const char *kHeadHtml = "<!DOCTYPE html>\n"
 "<html>\n"
 "<head>\n"
@@ -17,8 +19,11 @@ static const char *kHeadHtml = "<!DOCTYPE html>\n"
 "<style>\n";
 static const int kHeadLen = 132;
 
-static const char *kStartBody = "</style></head><body>\n";
-static const int kBodyLen = 22;
+static const char *kCloseStyle = "</style>\n";
+static const unsigned int kCloseStyleLen = 9;
+
+static const char *kStartBody = "</head><body>\n";
+static const int kBodyLen = 14;
 
 static const char *kEndHtml = "</body></html>";
 static const int kEndLen = 14;
@@ -34,6 +39,8 @@ static const char *INFO = "Useage:\n"
 "Options:\n"
 "    -s:Use simple css\n"
 "    -f:Use Github css\n";
+
+static const char *kLoadHljsFile = "./loadhighlightjs.html";
 
 int main(int argc, char **argv) {
     if (argc < 4) {
@@ -75,11 +82,14 @@ int main(int argc, char **argv) {
 
     printf("path %s mode %d \n", output_file_name, css_mode);
 
-    AddCssFile(output_file_name, src_string, "./simple-style.css", css_mode);
+    // char *css_file = "./github-markdown.css";
+    char *css_file = "./simple-style.css";
+    // AddCssFile(output_file_name, src_string, "./simple-style.css", css_mode);
+    AddCssFile(output_file_name, src_string, css_file, css_mode);
     return 0;
 }
 
-int AddCssFile(char *out_file_name, char * src_file_name, char *css_file_name, int mode) {
+int AddCssFile(char *out_file_name, char *src_file_name, char *css_file_name, int mode) {
     FILE *src_css;
     if ((src_css = fopen(css_file_name, "r")) == NULL) {
         printf("Error in open css file!\n");
@@ -96,7 +106,17 @@ int AddCssFile(char *out_file_name, char * src_file_name, char *css_file_name, i
     Append2File(out_file, src_css, 0);
     fclose(src_css);
 
-    // write </style><body>
+    // write </style>
+    fwrite(kCloseStyle, kCloseStyleLen, sizeof(char), out_file);
+
+    // add highlightjs content
+    FILE *append_hljs = fopen(kLoadHljsFile, "r");
+    if (append_hljs) {
+        Append2File(out_file, append_hljs, 0);
+        fclose(append_hljs);
+    }
+
+    // write </head><body>
     fwrite(kStartBody, kBodyLen, sizeof(char), out_file);
 
     // judge the mode if github should add some other info
